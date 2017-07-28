@@ -28,8 +28,8 @@
  * @author Marchenko Sergey, sergey@mzsl.ru
  */
 
-$s_plugin_Motives_title = 'Мотивы';
-$s_plugin_Motives_menu =  'мотивы';
+$s_plugin_Motives_title = 'Бонусы/Штрафы';
+$s_plugin_Motives_menu =  'бонусы/штрафы';
 $s_plugin_Motives_none  = 'пусто';
 $s_plugin_Motives_config = 'Настройки';
 $s_plugin_Motives_description = 'Добавить бонусы для пользователя.';
@@ -40,6 +40,8 @@ $s_plugin_Motives_issues   = 'Задачи';
 $s_plugin_Motives_notes    = 'Комментарии';
 $s_plugin_Motives_total_issues   = 'Общее количество задач';
 $s_plugin_Motives_total_notes    = 'Общее количество комментариев';
+$s_plugin_Motives_total_amount_bonuses   = 'Сумма бонусов';
+$s_plugin_Motives_total_amount_fines    = 'Сумма штрафов';
 $s_plugin_Motives_get_info_button = 'Выбрать комментарии';
 $s_plugin_Motives_reported_user   = 'Создатель комментария';
 $s_plugin_Motives_bonus_user      = 'Бонусный пользователь';

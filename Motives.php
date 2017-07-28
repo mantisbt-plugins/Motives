@@ -221,7 +221,7 @@ class MotivesPlugin extends MantisPlugin
 	}
 
 	/**
-	 * Create the resource link to load the jQuery library.
+	 * Create the resource link
 	 */
 	function resources( $p_event ) {
 		return '<link rel="stylesheet" type="text/css" href="' . plugin_file( 'motives.css' ) . '"/>' .

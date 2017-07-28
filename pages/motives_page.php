@@ -319,10 +319,10 @@ foreach ( $t_project_ids as $t_project_id_item ) {
 			</div>
 			<div class="widget-body">
 				<div class="widget-main">
-					Total issues: <?php echo $t_total_issues?><br/>
-					Total notes: <?php echo $t_total_notes?><br/>
-					Total amount of bonuses: <?php echo $t_total_bonuses?><br/>
-					Total amount of fines: <?php echo $t_total_fines?><br/>
+					<?php echo plugin_lang_get('total_issues')?>: <?php echo $t_total_issues?><br/>
+					<?php echo plugin_lang_get('total_notes')?>: <?php echo $t_total_notes?><br/>
+					<?php echo plugin_lang_get('total_amount_bonuses')?>: <?php echo $t_total_bonuses?><br/>
+					<?php echo plugin_lang_get('total_amount_fines')?>: <?php echo $t_total_fines?><br/>
 				</div>
 			</div>
 		</div>

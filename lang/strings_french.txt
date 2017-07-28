@@ -28,20 +28,20 @@
  * @author Marchenko Sergey, sergey@mzsl.ru
  */
 
-$s_plugin_Motives_title = 'Bonuses/Fines';
-$s_plugin_Motives_menu =  'Bonuses/Fines';
-$s_plugin_Motives_none  = 'none';
+$s_plugin_Motives_title = 'Bonus / amendes';
+$s_plugin_Motives_menu =  'Bonus / amendes';
+$s_plugin_Motives_none  = 'aucun';
 $s_plugin_Motives_config = 'Configuration';
-$s_plugin_Motives_description = 'Add bonuses for user.';
-$s_plugin_Motives_bonuses_fines = 'Bonus(+)/Fines(-)';
-$s_plugin_Motives_amount        = 'Amount: ';
-$s_plugin_Motives_error_numbers     = 'Positive or negative numbers are required';
-$s_plugin_Motives_issues   = 'Issues';
+$s_plugin_Motives_description = 'Ajouter des bonus pour les utilisateurs.';
+$s_plugin_Motives_bonuses_fines = 'Bonus (+) / Fines (-)';
+$s_plugin_Motives_amount        = 'Montant:';
+$s_plugin_Motives_error_numbers     = 'Des nombres positifs ou négatifs sont nécessaires';
+$s_plugin_Motives_issues   = 'Bogues';
 $s_plugin_Motives_notes    = 'Notes';
-$s_plugin_Motives_total_issues   = 'Total issues';
-$s_plugin_Motives_total_notes    = 'Total notes';
-$s_plugin_Motives_total_amount_bonuses   = 'Total amount of bonuses';
-$s_plugin_Motives_total_amount_fines    = 'Total amount of fines';
-$s_plugin_Motives_get_info_button = 'Select notes';
-$s_plugin_Motives_reported_user   = 'Reported user';
-$s_plugin_Motives_bonus_user      = 'Bonus user';
+$s_plugin_Motives_total_issues   = 'Bogues totaux';
+$s_plugin_Motives_total_notes    = 'Total des notes';
+$s_plugin_Motives_total_amount_bonuses   = 'Montant total des primes';
+$s_plugin_Motives_total_amount_fines    = 'Montant total des amendes';
+$s_plugin_Motives_get_info_button = 'Sélectionnez les notes';
+$s_plugin_Motives_reported_user   = 'Utilisateur déclaré';
+$s_plugin_Motives_bonus_user      = 'Bonus utilisateur';
