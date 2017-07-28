@@ -1,0 +1,45 @@
+<?php
+/** MantisBT - a php based bugtracking system
+ *
+ * Copyright (C) 2002 - 2014  MantisBT Team - mantisbt-dev@lists.sourceforge.net
+ *
+ * MantisBT is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * MantisBT is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MantisBT.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/** Russian
+ *
+ * See the qqq 'language' for message documentation incl. usage of parameters
+ * To improve a translation please visit http://translatewiki.net
+ *
+ * @ingroup Language
+ * @file
+ *
+ * @author Marchenko Sergey, sergey@mzsl.ru
+ */
+
+$s_plugin_Motives_title = 'Мотивы';
+$s_plugin_Motives_menu =  'мотивы';
+$s_plugin_Motives_none  = 'пусто';
+$s_plugin_Motives_config = 'Настройки';
+$s_plugin_Motives_description = 'Добавить бонусы для пользователя.';
+$s_plugin_Motives_bonuses_fines = 'Бонус(+)/Штраф(-)';
+$s_plugin_Motives_amount        = 'Количество: ';
+$s_plugin_Motives_error_numbers     = 'Необходимо ввести положительное либо отрицательное число';
+$s_plugin_Motives_issues   = 'Задачи';
+$s_plugin_Motives_notes    = 'Комментарии';
+$s_plugin_Motives_total_issues   = 'Общее количество задач';
+$s_plugin_Motives_total_notes    = 'Общее количество комментариев';
+$s_plugin_Motives_get_info_button = 'Выбрать комментарии';
+$s_plugin_Motives_reported_user   = 'Создатель комментария';
+$s_plugin_Motives_bonus_user      = 'Бонусный пользователь';
