@@ -1,4 +1,4 @@
-Activity
+Motives
 ================
 
 Motives Plugin for MantisBT v2.0
@@ -16,10 +16,4 @@ git clone https://github.com/mantisbt-plugins/Motives.git
 ```
 
 - Go to Manage - Manage Plugins and install the plugin.
-
-Screenshots
-================
-![Settings](/files/settings.jpeg "Settings page")
-
-![Activity](/files/activity.jpeg "Activity page")
 
