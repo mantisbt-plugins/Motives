@@ -41,7 +41,7 @@ class MotivesPlugin extends MantisPlugin
 		//$this->page        = 'config';
 
 		$this->version  = '1.0';
-		$this->requires = array( 'MantisCore' => '2.0.0', );
+		$this->requires = array( 'MantisCore' => '1.3.0', );
 
 		$this->author  = 'Sergey Marchenko';
 		$this->contact = 'sergey@mzsl.ru';
@@ -202,14 +202,7 @@ class MotivesPlugin extends MantisPlugin
 		if ( !access_has_global_level( plugin_config_get( 'view_report_threshold' ) ) ) {
 			return array();
 		}
-
-		$links   = array();
-		$links[] = array(
-			'title' => plugin_lang_get( 'menu' ),
-			'url'   => plugin_page( 'motives_page' ),
-			'icon'  => 'fa-money'
-		);
-		return $links;
+		return array( '<a href="' . plugin_page( 'motives_page' ) . '">' . plugin_lang_get( 'menu' ) . '</a>', );
 	}
 
 	function init() {

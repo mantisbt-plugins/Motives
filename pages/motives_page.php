@@ -163,8 +163,7 @@ if ( ALL_PROJECTS == $t_project_id ) {
 	array_unshift( $t_project_ids, $t_project_id );
 }
 
-layout_page_header( plugin_lang_get( 'title' ) );
-layout_page_begin();
+html_page_top( plugin_lang_get( 'title' ) );
 
 $t_project_index = 0;
 
@@ -417,4 +416,4 @@ foreach ( $t_project_bugs as $t_project_id => $t_project_data ) {
 	echo '</div></div></div></div>';
 }
 
-layout_page_end();
+html_page_bottom();
