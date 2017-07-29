@@ -1,7 +1,7 @@
 Motives
 ================
 
-Motives Plugin for MantisBT v2.0
+Motives Plugin for MantisBT v1.3
 By Sergey Marchenko (sergey@mzsl.ru)
 
 The plugin add ability to add bonuses/fines for each user.
