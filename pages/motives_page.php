@@ -164,7 +164,7 @@ if ( ALL_PROJECTS == $t_project_id ) {
 }
 
 html_page_top( plugin_lang_get( 'title' ) );
-
+echo "<div class='motives-root'>";
 $t_project_index = 0;
 
 $t_project_ids_size = count( $t_project_ids );
@@ -252,7 +252,7 @@ foreach ( $t_project_ids as $t_project_id_item ) {
 							if ( $t_project_size > 1 ) {
 								$t_total_issues_html = '<span title="' . plugin_lang_get( 'total_issues' ) . '">' . $t_total_issues . '</span>';
 								$t_total_notes_html  = '<span title="' . plugin_lang_get( 'total_notes' ) . '">' . $t_total_notes . '</span>';
-								echo '<span class="badge">', $t_total_issues_html, '/', $t_total_notes_html, '</span>';
+								echo ' <span class="badge">', $t_total_issues_html, '/', $t_total_notes_html, '</span>';
 							}
 							?>
 						</h4>
@@ -263,14 +263,14 @@ foreach ( $t_project_ids as $t_project_id_item ) {
 								<tr>
 									<td class="bold">
 										<?php
-										$t_filter['do_filter_by_date'] = 'on';
-										$t_filter['start_day']         = $t_stats_from_d;
-										$t_filter['start_month']       = $t_stats_from_m;
-										$t_filter['start_year']        = $t_stats_from_y;
-										$t_filter['end_day']           = $t_stats_to_d;
-										$t_filter['end_month']         = $t_stats_to_m;
-										$t_filter['end_year']          = $t_stats_to_y;
-										print_filter_do_filter_by_date( true, $t_filter );
+										$g_filter['do_filter_by_date'] = 'on';
+										$g_filter['start_day']         = $t_stats_from_d;
+										$g_filter['start_month']       = $t_stats_from_m;
+										$g_filter['start_year']        = $t_stats_from_y;
+										$g_filter['end_day']           = $t_stats_to_d;
+										$g_filter['end_month']         = $t_stats_to_m;
+										$g_filter['end_year']          = $t_stats_to_y;
+										print_filter_do_filter_by_date( true);
 										?>
 									</td>
 									<td class="bold">
@@ -415,5 +415,5 @@ foreach ( $t_project_bugs as $t_project_id => $t_project_data ) {
 	}
 	echo '</div></div></div></div>';
 }
-
+echo "</div>";
 html_page_bottom();
