@@ -29,6 +29,10 @@ require_api( 'bugnote_api.php' );
 require_api( 'icon_api.php' );
 require_once('motives_api.php');
 
+if ( !access_has_global_level( plugin_config_get( 'view_report_threshold' ) ) ) {
+	access_denied();
+}
+
 $t_filter = array();
 
 $t_today     = date( 'd:m:Y' );

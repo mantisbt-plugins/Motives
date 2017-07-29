@@ -73,6 +73,10 @@ class MotivesPlugin extends MantisPlugin
 	 * @param boolean $p_private    Private note
 	 */
 	function view_note( $p_event, $p_bug_id, $p_bugnote_id, $p_private ) {
+		if ( !access_has_bug_level( plugin_config_get( 'view_threshold' ), $p_bug_id ) ) {
+			return;
+		}
+
 		if ( isset( $this->update_cache[$p_bugnote_id] ) ) {
 			$t_update = $this->update_cache[$p_bugnote_id];
 			$t_css    = $p_private ? 'bugnote-private' : 'bugnote-public';
@@ -154,7 +158,7 @@ class MotivesPlugin extends MantisPlugin
 
 		$f_amount  = gpc_get_int( 'plugin_motives_amount', 0 );
 		$f_user_id = gpc_get_int( 'plugin_motives_user', 0 );
-		if ( $f_user_id > 0 ) {
+		if ( $f_user_id > 0 && $f_amount != 0) {
 			motives_add( $p_bug_id, $p_bugnote_id, auth_get_current_user_id(), $f_user_id, $f_amount );
 		}
 	}
@@ -183,7 +187,7 @@ class MotivesPlugin extends MantisPlugin
 	 */
 	function schema() {
 		return array(
-			array( 'CreateTableSQL', array( plugin_table( 'motives' ), "
+			array( 'CreateTableSQL', array( plugin_table( 'bonus' ), "
 				bug_id			I		NOTNULL UNSIGNED,
 				bugnote_id		I		NOTNULL UNSIGNED,
 				reporter_id		I		NOTNULL UNSIGNED,
@@ -195,6 +199,10 @@ class MotivesPlugin extends MantisPlugin
 	}
 
 	function menu() {
+		if ( !access_has_global_level( plugin_config_get( 'view_report_threshold' ) ) ) {
+			return array();
+		}
+
 		$links   = array();
 		$links[] = array(
 			'title' => plugin_lang_get( 'menu' ),
@@ -212,11 +220,12 @@ class MotivesPlugin extends MantisPlugin
 
 	function config() {
 		return array(
-			'view_threshold'   => VIEWER,
-			'update_threshold' => MANAGER,
-			'day_count'        => 3,
-			'show_avatar'      => ON,
-			'limit_bug_notes'  => 1000
+			'view_threshold'        => VIEWER,
+			'update_threshold'      => MANAGER,
+			'view_report_threshold' => MANAGER,
+			'day_count'             => 3,
+			'show_avatar'           => ON,
+			'limit_bug_notes'       => 100000
 		);
 	}
 

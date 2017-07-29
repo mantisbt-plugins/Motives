@@ -1,7 +1,7 @@
 <?php
 
 function motives_add( $p_bug_id, $p_bugnote_id, $p_reporter_id, $p_user_id, $p_amount ) {
-	$t_update_table = plugin_table( 'motives', 'Motives' );
+	$t_update_table = plugin_table( 'bonus', 'Motives' );
 	$t_query        = "INSERT INTO $t_update_table (
 					bug_id,
 					bugnote_id,
@@ -22,14 +22,14 @@ function motives_add( $p_bug_id, $p_bugnote_id, $p_reporter_id, $p_user_id, $p_a
 }
 
 function motives_update( $p_bug_id, $p_bugnote_id, $p_reporter_id, $p_user_id, $p_amount ) {
-	$t_update_table = plugin_table( 'motives', 'Motives' );
+	$t_update_table = plugin_table( 'bonus', 'Motives' );
 	$t_query        = "DELETE FROM $t_update_table WHERE bugnote_id =" . db_param();
 	db_query( $t_query, array( $p_bugnote_id ) );
 	motives_add( $p_bug_id, $p_bugnote_id, $p_reporter_id, $p_user_id, $p_amount );
 }
 
 function motives_get( $p_bugnote_id ) {
-	$t_update_table = plugin_table( 'motives', 'Motives' );
+	$t_update_table = plugin_table( 'bonus', 'Motives' );
 	$t_query        = "SELECT * FROM $t_update_table WHERE bugnote_id=" . db_param();
 	$t_result       = db_query( $t_query, array( $p_bugnote_id ) );
 
@@ -45,7 +45,7 @@ function motives_get( $p_bugnote_id ) {
 }
 
 function motives_get_by_bug( $p_bug_id ) {
-	$t_update_table = plugin_table( 'motives', 'Motives' );
+	$t_update_table = plugin_table( 'bonus', 'Motives' );
 	$t_query        = "SELECT * FROM $t_update_table WHERE bug_id=" . db_param();
 	$t_result       = db_query( $t_query, array( $p_bug_id ) );
 
@@ -82,7 +82,7 @@ function motives_get_latest_bugnotes( $p_project_id, $p_date_from, $p_date_to, $
 	$t_bug_table          = db_get_table( 'mantis_bug_table' );
 	$t_bugnote_table      = db_get_table( 'mantis_bugnote_table' );
 	$t_bugnote_text_table = db_get_table( 'mantis_bugnote_text_table' );
-	$t_update_table       = plugin_table( 'motives', 'Motives' );
+	$t_update_table       = plugin_table( 'bonus', 'Motives' );
 
 	$t_query = "SELECT b.*, t.note, m.amount, m.user_id as bonus_user_id
                     FROM      $t_bugnote_table b
@@ -91,6 +91,7 @@ function motives_get_latest_bugnotes( $p_project_id, $p_date_from, $p_date_to, $
                     LEFT JOIN $t_update_table m ON m.bugnote_id = t.id  
                     WHERE 	bt.project_id=" . db_param() . " AND
                     		b.date_submitted >= $c_from AND b.date_submitted <= $c_to AND
+                    		m.bugnote_id IS NOT NULL AND
                     		LENGTH(t.note) > 0
                     " .
 		(!empty( $c_user_id ) ? ' AND b.reporter_id = ' . $c_user_id : '') .
