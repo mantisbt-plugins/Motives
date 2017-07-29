@@ -116,7 +116,7 @@ class MotivesPlugin extends MantisPlugin
 			return;
 		}
 		echo '<tr ', helper_alternate_class(), '><td class="category">', plugin_lang_get( 'bonuses_fines' ),
-			'</td><td><select name="plugin_motives_user"><option value="' . META_FILTER_ANY . '">[' . plugin_lang_get( 'none' ) . ']</option>';
+			'</td><td colspan="5"><select name="plugin_motives_user"><option value="' . META_FILTER_ANY . '">[' . plugin_lang_get( 'none' ) . ']</option>';
 
 		print_note_option_list( NO_USER );
 		echo '</select> ',
