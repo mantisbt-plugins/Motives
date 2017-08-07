@@ -309,29 +309,31 @@ foreach ( $t_project_ids as $t_project_id_item ) {
 			</div>
 		</form>
 	</div>
-	<div class="col-md-12 col-xs-12">
-		<div class="space-10"></div>
-		<div class="widget-box widget-color-blue2">
-			<div class="widget-header widget-header-small">
-				<h4 class="widget-title"><i class="ace-icon fa fa-columns"></i><?php echo plugin_lang_get('bonuses_fines')?></h4>
-				<div class="widget-toolbar">
-					<a id="filter-toggle" data-action="collapse" href="#">
-						<i class="1 ace-icon fa bigger-125 fa-chevron-up"></i>
-					</a>
-				</div>
-			</div>
-			<div class="widget-body">
-				<div class="widget-main">
-					<?php echo plugin_lang_get('total_issues')?>: <?php echo $t_total_issues?><br/>
-					<?php echo plugin_lang_get('total_notes')?>: <?php echo $t_total_notes?><br/>
-					<?php echo plugin_lang_get('total_amount_bonuses')?>: <?php echo $t_total_bonuses?><br/>
-					<?php echo plugin_lang_get('total_amount_fines')?>: <?php echo $t_total_fines?><br/>
-				</div>
-			</div>
-		</div>
-	</div>
-<?php
-
+<?php if (!empty($t_project_bugs)) { ?>
+    <div class="col-md-12 col-xs-12">
+        <div class="space-10"></div>
+        <div class="widget-box widget-color-blue2">
+            <div class="widget-header widget-header-small">
+                <h4 class="widget-title"><i
+                            class="ace-icon fa fa-columns"></i><?php echo plugin_lang_get( 'bonuses_fines' ) ?></h4>
+                <div class="widget-toolbar">
+                    <a id="filter-toggle" data-action="collapse" href="#">
+                        <i class="1 ace-icon fa bigger-125 fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="widget-body">
+                <div class="widget-main">
+					<?php echo plugin_lang_get( 'total_issues' ) ?>: <?php echo $t_total_issues ?><br/>
+					<?php echo plugin_lang_get( 'total_notes' ) ?>: <?php echo $t_total_notes ?><br/>
+					<?php echo plugin_lang_get( 'total_amount_bonuses' ) ?>: <?php echo $t_total_bonuses ?><br/>
+					<?php echo plugin_lang_get( 'total_amount_fines' ) ?>: <?php echo $t_total_fines ?><br/>
+                </div>
+            </div>
+        </div>
+    </div>
+	<?php
+}
 
 foreach ( $t_project_bugs as $t_project_id => $t_project_data ) {
 	$t_bug_note_size     = $t_project_data['note_size'];
@@ -398,9 +400,8 @@ foreach ( $t_project_bugs as $t_project_id => $t_project_data ) {
 				$t_bonus_user_link = !empty($t_bugnote['bonus_user_id']) ? '<a href="view_user_page.php?id=' . $t_bugnote['bonus_user_id'] . '">' . $t_bonus_user_name . '</a>' : $t_bonus_user_name;
 				$t_note           = string_display_links( trim( $t_bugnote['note'] ) );
 				$t_bugnote_link   = string_get_bugnote_view_link2( $t_bugnote['bug_id'], $t_bugnote['id'], $t_user_id );
-				$t_amount         = !empty($t_bugnote['amount']) && ((int)$t_bugnote['amount']) > 0 ? '+' . $t_bugnote['amount'] : $t_bugnote['amount'];
+				$t_amount         = motives_format_amount($t_bugnote['amount']);
 				if ( !empty( $t_note ) ) {
-
 					echo '<tr><td align="center" style="vertical-align: top; text-align: center;"><div class="motives-date">', $t_date_submitted, '</div>', '';
 					if ( $t_show_avatar && !empty( $t_user_id ) ) print_avatar( $t_user_id, 60 );
 					echo '</td>';

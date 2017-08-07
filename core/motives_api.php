@@ -17,7 +17,7 @@ function motives_add( $p_bug_id, $p_bugnote_id, $p_reporter_id, $p_user_id, $p_a
 					' . db_param() . ',
 					' . db_param() . ' )';
 	db_query( $t_query, array(
-		$p_bug_id, $p_bugnote_id, $p_reporter_id, $p_user_id, db_now(), $p_amount
+		$p_bug_id, $p_bugnote_id, $p_reporter_id, $p_user_id, date("Y-m-d G:i:s"), $p_amount
 	) );
 }
 
@@ -26,6 +26,14 @@ function motives_update( $p_bug_id, $p_bugnote_id, $p_reporter_id, $p_user_id, $
 	$t_query        = "DELETE FROM $t_update_table WHERE bugnote_id =" . db_param();
 	db_query( $t_query, array( $p_bugnote_id ) );
 	motives_add( $p_bug_id, $p_bugnote_id, $p_reporter_id, $p_user_id, $p_amount );
+}
+
+function motives_delete( $p_bugnote_id ) {
+	# Remove the bugnote
+	db_param_push();
+	$t_update_table = plugin_table( 'bonus', 'Motives' );
+	$t_query = "DELETE FROM $t_update_table WHERE bugnote_id=" . db_param();
+	db_query( $t_query, array( $p_bugnote_id ) );
 }
 
 function motives_get( $p_bugnote_id ) {
@@ -82,13 +90,13 @@ function motives_get_latest_bugnotes( $p_project_id, $p_date_from, $p_date_to, $
 	$t_bug_table          = db_get_table( 'mantis_bug_table' );
 	$t_bugnote_table      = db_get_table( 'mantis_bugnote_table' );
 	$t_bugnote_text_table = db_get_table( 'mantis_bugnote_text_table' );
-	$t_update_table       = plugin_table( 'bonus', 'Motives' );
+	$t_bonus_table        = plugin_table( 'bonus', 'Motives' );
 
 	$t_query = "SELECT b.*, t.note, m.amount, m.user_id as bonus_user_id
-                    FROM      $t_bugnote_table b
-                    LEFT JOIN $t_bug_table bt ON b.bug_id = bt.id
+					FROM      $t_bonus_table m
+                    LEFT JOIN $t_bug_table bt ON bt.id = m.bug_id
+                    LEFT JOIN $t_bugnote_table b ON b.id = m.bugnote_id
                     LEFT JOIN $t_bugnote_text_table t ON b.bugnote_text_id = t.id
-                    LEFT JOIN $t_update_table m ON m.bugnote_id = t.id  
                     WHERE 	bt.project_id=" . db_param() . " AND
                     		b.date_submitted >= $c_from AND b.date_submitted <= $c_to AND
                     		m.bugnote_id IS NOT NULL AND
@@ -109,6 +117,10 @@ function motives_get_latest_bugnotes( $p_project_id, $p_date_from, $p_date_to, $
 	return $t_bugnotes;
 }
 
+function motives_format_amount( $p_amount ) {
+	return !empty($p_amount) && $p_amount > 0 ? '+' . $p_amount : $p_amount;
+}
+
 /**
  * Group bugnotes by bug id
  * @param array $p_bugnotes Bug notes
@@ -122,4 +134,127 @@ function motives_group_by_bug( $p_bugnotes ) {
 		$t_group_by_bug[$bug_id][] = $t_bugnote;
 	}
 	return $t_group_by_bug;
+}
+
+/**
+ * Retrieve a full list of changes to the bonus's information.
+ * @param integer $p_bug_id     A bug identifier.
+ * @param integer $p_bugnote_id A bugnote identifier.
+ * @return array/null Array of Revision rows
+ */
+function motives_revision_list( $p_bug_id, $p_bugnote_id = 0 ) {
+	db_param_push();
+	$t_params = array( $p_bug_id );
+	$t_bonus_revision_table       = plugin_table( 'bonus_revision', 'Motives' );
+	$t_query = "SELECT * FROM $t_bonus_revision_table WHERE bug_id=" . db_param();
+
+	if( $p_bugnote_id > 0 ) {
+		$t_query .= ' AND bugnote_id=' . db_param();
+		$t_params[] = $p_bugnote_id;
+	} else {
+		$t_query .= ' AND bugnote_id=0';
+	}
+
+	$t_query .= ' ORDER BY id DESC';
+	$t_result = db_query( $t_query, $t_params );
+
+	$t_revisions = array();
+	while( $t_row = db_fetch_array( $t_result ) ) {
+		$t_revisions[$t_row['id']] = $t_row;
+	}
+
+	return $t_revisions;
+}
+
+/**
+ * Retrieve a list of changes to a bug of the same type as the
+ * given revision ID.
+ * @param integer $p_rev_id A bonus revision identifier.
+ * @return array|null Array of Revision rows
+ */
+function motives_revision_like( $p_rev_id ) {
+	db_param_push();
+	$t_bonus_revision_table       = plugin_table( 'bonus_revision', 'Motives' );
+	$t_query = "SELECT bug_id, bugnote_id FROM $t_bonus_revision_table WHERE id=" . db_param();
+	$t_result = db_query( $t_query, array( $p_rev_id ) );
+
+	$t_row = db_fetch_array( $t_result );
+
+	if( !$t_row ) {
+		trigger_error( ERROR_BUG_REVISION_NOT_FOUND, ERROR );
+	}
+
+	$t_bug_id = $t_row['bug_id'];
+	$t_bugnote_id = $t_row['bugnote_id'];
+
+	db_param_push();
+	$t_params = array( $t_bug_id );
+	$t_query = "SELECT * FROM $t_bonus_revision_table WHERE bug_id=" . db_param();
+
+	if( $t_bugnote_id > 0 ) {
+		$t_query .= ' AND bugnote_id=' . db_param();
+		$t_params[] = $t_bugnote_id;
+	} else {
+		$t_query .= ' AND bugnote_id=0';
+	}
+
+	$t_query .= ' ORDER BY id DESC';
+	$t_result = db_query( $t_query, $t_params );
+
+	$t_revisions = array();
+	while( $t_row = db_fetch_array( $t_result ) ) {
+		$t_revisions[$t_row['id']] = $t_row;
+	}
+
+	return $t_revisions;
+}
+
+/**
+ * Add new revision for the bonus
+ * @return integer last successful insert id
+ */
+function motives_revision_add( $p_bug_id, $p_bugnote_id, $p_reporter_id, $p_user_id, $p_amount ) {
+	$t_update_table = plugin_table( 'bonus_revision', 'Motives' );
+	$t_query        = "INSERT INTO $t_update_table (
+					bug_id,
+					bugnote_id,
+					reporter_id,
+					user_id,
+					timestamp,
+					amount
+				) VALUES (
+					" . db_param() . ',
+					' . db_param() . ',
+					' . db_param() . ',
+					' . db_param() . ',
+					' . db_param() . ',
+					' . db_param() . ' )';
+	db_query( $t_query, array(
+		$p_bug_id, $p_bugnote_id, $p_reporter_id, $p_user_id, db_now(), $p_amount
+	) );
+	return db_insert_id($t_update_table);
+}
+
+/**
+ * Retrieve a count of revisions to the bonus's information.
+ * @param integer $p_bug_id     A bug identifier.
+ * @param integer $p_bugnote_id A bugnote identifier (optional).
+ * @return array|null Array of Revision rows
+ */
+function motives_revision_count( $p_bug_id, $p_bugnote_id = 0 ) {
+	db_param_push();
+	$t_revision_table = plugin_table( 'bonus_revision', 'Motives' );
+	$t_params = array( $p_bug_id );
+	$t_query = "SELECT COUNT(id) FROM $t_revision_table WHERE bug_id=" . db_param();
+
+	if( $p_bugnote_id > 0 ) {
+		$t_query .= ' AND bugnote_id=' . db_param();
+		$t_params[] = $p_bugnote_id;
+	} else {
+		$t_query .= ' AND bugnote_id=0';
+	}
+
+	$t_result = db_query( $t_query, $t_params );
+
+	return db_result( $t_result );
 }
