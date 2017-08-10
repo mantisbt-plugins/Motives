@@ -70,6 +70,10 @@ hr.motives-hr {
 .motives-root h4.widget-title {
     -webkit-margin-before: 0;
     -webkit-margin-after: 0;
-    margin-left: 3px;
+    margin: 0 0 0 3px;
     padding: 0;
+}
+.motives-root .table-container {
+    margin: 0;
+    width: auto;
 }

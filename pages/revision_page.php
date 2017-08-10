@@ -83,7 +83,7 @@ function show_revision( array $p_revision ) {
 
 <tr>
 <th class="category"><?php echo lang_get( 'revision' ) ?></th>
-<td colspan="2"><?php echo $t_by_string ?></td>
+<td colspan="3"><?php echo $t_by_string ?></td>
 <tr>
 <th class="category"><?php echo $t_label ?></th>
 <td colspan="3"><?php echo $t_rev_value ?></td>
@@ -92,12 +92,10 @@ function show_revision( array $p_revision ) {
 	<?php
 }
 
-layout_page_header( bug_format_summary( $t_bug_id, SUMMARY_CAPTION ) );
-
-layout_page_begin();
+html_page_top( bug_format_summary( $t_bug_id, SUMMARY_CAPTION ) );
 
 ?>
-
+<div class="motives-root">
 <div class="col-md-12 col-xs-12">
 <div class="widget-box widget-color-blue2">
 <div class="widget-header widget-header-small">
@@ -113,16 +111,16 @@ layout_page_begin();
 		<div class="btn-group pull-right">
 <?php
 if( !$f_bug_id && !$f_bugnote_id ) {
-	print_small_button( '?bug_id=' . $t_bug_id, lang_get( 'all_revisions' ) );
+	print_bracket_link( '?bug_id=' . $t_bug_id, lang_get( 'all_revisions' ) );
 }
-print_small_button( 'view.php?id=' . $t_bug_id, lang_get( 'back_to_issue' ) );
+print_bracket_link( 'view.php?id=' . $t_bug_id, lang_get( 'back_to_issue' ) );
 ?>
 	</div>
 </div>
 </div>
 <div class="widget-main no-padding">
-<div class="table-responsive">
-<table class="table table-bordered table-condensed table-striped">
+<div class="table-responsive table-container">
+<table class="table table-bordered table-condensed table-striped motives-table">
 <tr>
 <th class="category" width="15%"><?php echo lang_get( 'summary' ) ?></th>
 <td colspan="3"><?php echo bug_format_summary( $t_bug_id, SUMMARY_FIELD ) ?></td>
@@ -138,6 +136,7 @@ print_small_button( 'view.php?id=' . $t_bug_id, lang_get( 'back_to_issue' ) );
 </div>
 </div>
 </div>
+</div>
 <?php
-layout_page_end();
+html_page_bottom();
 
