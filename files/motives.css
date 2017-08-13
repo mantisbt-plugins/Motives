@@ -76,4 +76,7 @@ hr.motives-hr {
 .motives-root .table-container {
     margin: 0;
     width: auto;
+
+.motives-fines-by-user, .motives-bonuses-by-user {
+    padding-left: 10px;
 }

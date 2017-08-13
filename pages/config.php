@@ -6,28 +6,13 @@ layout_page_header( plugin_lang_get( 'title' ) );
 layout_page_begin();
 print_manage_menu();
 
-function activity_print_user_option_list( $p_name ) {
-	$t_users     = project_get_all_user_rows();
-	$t_selection = plugin_config_get( $p_name );
-	$t_size      = count( $t_users );
-	if ($t_size > 10) $t_size = 10;
-
-	echo '<select name="' . $p_name . '[]" multiple="multiple" size="' . $t_size . '" class="input-sm">';
-	foreach ( $t_users as $t_user ) {
-		echo '<option value="' . $t_user['id'] . '"';
-		check_selected( $t_selection, $t_user['id'] );
-		echo '>' . $t_user['username'] . '</option>';
-	}
-	echo '</select>';
-}
-
 ?>
     <div class="col-md-12 col-xs-12">
         <div class="space-10"></div>
         <div class="form-container" >
 
             <form action="<?php echo plugin_page( 'config_edit' ) ?>" method="post">
-                <?php echo form_security_field( 'plugin_Activity_config_edit' ) ?>
+                <?php echo form_security_field( 'plugin_Motives_config_edit' ) ?>
                 <div class="widget-box widget-color-blue2">
                     <div class="widget-header widget-header-small">
                         <h4 class="widget-title lighter">

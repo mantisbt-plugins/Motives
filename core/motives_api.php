@@ -92,7 +92,7 @@ function motives_get_latest_bugnotes( $p_project_id, $p_date_from, $p_date_to, $
 	$t_bugnote_text_table = db_get_table( 'mantis_bugnote_text_table' );
 	$t_bonus_table        = plugin_table( 'bonus', 'Motives' );
 
-	$t_query = "SELECT b.*, t.note, m.amount, m.user_id as bonus_user_id
+	$t_query = "SELECT b.*, bt.category_id, t.note, m.amount, m.user_id as bonus_user_id
 					FROM      $t_bonus_table m
                     LEFT JOIN $t_bug_table bt ON bt.id = m.bug_id
                     LEFT JOIN $t_bugnote_table b ON b.id = m.bugnote_id
