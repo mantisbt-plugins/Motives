@@ -86,7 +86,7 @@ class MotivesPlugin extends MantisPlugin
 			$t_revisions = '';
 			if ( isset( $this->revision_cache[$p_bugnote_id] )
 					&& ((int) $this->revision_cache[$p_bugnote_id] > 1)) {
-				$t_revisions = '<a href="' . plugin_page( 'revision_page.php' ) . '&bugnote_id=' . $p_bugnote_id . '">' .
+				$t_revisions = '<a href="' . plugin_page( 'revision_page' ) . '&bugnote_id=' . $p_bugnote_id . '">' .
 					sprintf( lang_get( 'view_num_revisions' ), $this->revision_cache[$p_bugnote_id] ) . '</a>';
 			}
 
