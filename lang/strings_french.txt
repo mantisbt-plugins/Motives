@@ -51,3 +51,5 @@ $s_plugin_Motives_lbl_day_count = 'Nombre de jours dans le filtre (par défaut)'
 $s_plugin_Motives_enabled = 'Sur';
 $s_plugin_Motives_disabled = 'De';
 $s_plugin_Motives_bonus_edited = 'Bonus/Fines édité';
+$s_plugin_Motives_total_bonuses_user = 'Montant total des primes par utilisateur / projet / catégorie';
+$s_plugin_Motives_total_fines_user = 'Montant total des amendes par Utilisateur / Projet / Catégorie';

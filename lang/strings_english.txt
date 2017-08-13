@@ -51,3 +51,5 @@ $s_plugin_Motives_lbl_day_count = 'Day count in filter (by default)';
 $s_plugin_Motives_enabled = 'On';
 $s_plugin_Motives_disabled = 'Off';
 $s_plugin_Motives_bonus_edited = 'Bonus/Fines edited';
+$s_plugin_Motives_total_bonuses_user = 'Total amount of bonuses by User / Project / Category';
+$s_plugin_Motives_total_fines_user = 'Total amount of fines by User / Project / Category';

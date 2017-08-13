@@ -210,6 +210,8 @@ $t_total_issues  = 0;
 $t_total_notes   = 0;
 $t_total_bonuses = 0;
 $t_total_fines   = 0;
+$t_user_bonuses  = array();
+$t_user_fines    = array();
 foreach ( $t_project_ids as $t_project_id_item ) {
 	$t_bug_notes     = motives_get_latest_bugnotes( $t_project_id_item, $t_from, $t_to, $f_note_user_id, $f_bonus_user_id, $f_category_id, $t_limit_bug_notes );
 	$t_bug_note_size = count( $t_bug_notes );
@@ -229,9 +231,16 @@ foreach ( $t_project_ids as $t_project_id_item ) {
 		$t_amount = (int) $t_bug_item['amount'];
 		if ( $t_amount > 0) {
 			$t_total_bonuses += $t_amount;
+			if (!isset($t_user_bonuses[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_item['category_id']]))
+				$t_user_bonuses[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_item['category_id']] = 0;
+			$t_user_bonuses[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_item['category_id']] += $t_amount;
 		} else {
 			$t_total_fines += $t_amount;
+			if (!isset($t_user_fines[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_item['category_id']]))
+				$t_user_fines[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_item['category_id']] = 0;
+			$t_user_fines[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_item['category_id']] += $t_amount;
 		}
+
 	}
 }
 
@@ -329,6 +338,34 @@ foreach ( $t_project_ids as $t_project_id_item ) {
 					<?php echo plugin_lang_get( 'total_notes' ) ?>: <?php echo $t_total_notes ?><br/>
 					<?php echo plugin_lang_get( 'total_amount_bonuses' ) ?>: <?php echo $t_total_bonuses ?><br/>
 					<?php echo plugin_lang_get( 'total_amount_fines' ) ?>: <?php echo $t_total_fines ?><br/>
+					<?php
+					if ( !empty( $t_user_bonuses ) ) {
+						echo '<span>' . plugin_lang_get('total_bonuses_user') . ':</span>';
+						echo '<div class="motives-bonuses-by-user">';
+						foreach ( $t_user_bonuses as $t_user_id => $t_user_projects ) {
+							echo '<span class="bold">' . user_get_name( $t_user_id ) . '</span>:<br/>';
+							foreach ( $t_user_projects as $t_user_project => $t_user_categories ) {
+								foreach ( $t_user_categories as $t_user_cat => $t_user_amount ) {
+									echo project_get_name( $t_user_project ) . '/' . category_get_name( $t_user_cat ) . ': ' . motives_format_amount( $t_user_amount ) . '</br>';
+								}
+							}
+						}
+						echo '</div>';
+					}
+					if (!empty( $t_user_fines )) {
+						echo '<span>' . plugin_lang_get('total_fines_user') . ':</span>';
+						echo '<div class="motives-fines-by-user">';
+						foreach ( $t_user_fines as $t_user_id => $t_user_projects ) {
+							echo '<span class="bold">' . user_get_name( $t_user_id ) . '</span>:<br/>';
+							foreach ( $t_user_projects as $t_user_project => $t_user_categories ) {
+								foreach ( $t_user_categories as $t_user_cat => $t_user_amount ) {
+									echo project_get_name( $t_user_project ) . '/' . category_get_name( $t_user_cat ) . ': ' . motives_format_amount( $t_user_amount ) . '</br>';
+								}
+							}
+						}
+						echo '</div>';
+					}
+					?>
                 </div>
             </div>
         </div>
