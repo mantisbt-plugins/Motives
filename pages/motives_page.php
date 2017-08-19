@@ -111,6 +111,14 @@ function is_empty_group( $p_group ) {
 	return true;
 }
 
+function motives_count_bugnotes( $p_group ) {
+	$result = 0;
+	foreach ( $p_group as $t_item ) {
+		$result += count( $t_item );
+	}
+	return $result;
+}
+
 $t_user_id = auth_get_current_user_id();
 
 $f_note_user_id_arr = gpc_get_int_array( 'note_user_id', array() );
@@ -205,6 +213,7 @@ $t_use_javascript       = config_get( 'use_javascript', ON );
 
 
 $t_project_bugs = array();
+$t_category_bugs = array();
 $t_project_size  = 0;
 $t_total_issues  = 0;
 $t_total_notes   = 0;
@@ -228,19 +237,20 @@ foreach ( $t_project_ids as $t_project_id_item ) {
 	$t_project_size++;
 
 	foreach ( $t_bug_notes as $t_bug_item ) {
-		$t_amount = (int) $t_bug_item['amount'];
-		if ( $t_amount > 0) {
+		$t_amount          = (int)$t_bug_item['amount'];
+		$t_bug_category_id = $t_bug_item['category_id'];
+		if ( $t_amount > 0 ) {
 			$t_total_bonuses += $t_amount;
-			if (!isset($t_user_bonuses[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_item['category_id']]))
-				$t_user_bonuses[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_item['category_id']] = 0;
-			$t_user_bonuses[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_item['category_id']] += $t_amount;
+			if ( !isset( $t_user_bonuses[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_category_id] ) )
+				$t_user_bonuses[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_category_id] = 0;
+			$t_user_bonuses[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_category_id] += $t_amount;
 		} else {
 			$t_total_fines += $t_amount;
-			if (!isset($t_user_fines[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_item['category_id']]))
-				$t_user_fines[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_item['category_id']] = 0;
-			$t_user_fines[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_item['category_id']] += $t_amount;
+			if ( !isset( $t_user_fines[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_category_id] ) )
+				$t_user_fines[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_category_id] = 0;
+			$t_user_fines[$t_bug_item['bonus_user_id']][$t_project_id_item][$t_bug_category_id] += $t_amount;
 		}
-
+		$t_category_bugs[$t_project_id_item][$t_bug_category_id][$t_bug_item['bug_id']][] = $t_bug_item;
 	}
 }
 
@@ -374,85 +384,88 @@ foreach ( $t_project_ids as $t_project_id_item ) {
 }
 
 foreach ( $t_project_bugs as $t_project_id => $t_project_data ) {
-	$t_bug_note_size     = $t_project_data['note_size'];
-	$t_project_name_link = '';
-	$t_project_html      = '';
+	foreach ( $t_category_bugs[$t_project_id] as $t_bugnote_category_id => $t_category_bugs_array ) {
+		$t_bug_note_size     = motives_count_bugnotes ( $t_category_bugs_array );
+		$t_project_name_link = '';
+		$t_project_html      = '';
 
-	if ( $t_bug_note_size == 0 ) continue;
+		if ( $t_bug_note_size == 0 ) continue;
 
-	$t_project_name = project_get_field( $t_project_id, 'name' );
-	if ( $t_use_javascript && $t_project_ids_size > 1 ) {
-		$t_project_name_link = '<span style="cursor:pointer;" class="motives-project-link" data-project="' . $t_project_id . '">' . $t_project_name . '</span>';
-	} else {
-		$t_project_name_link = $t_project_name;
-	}
+		$t_project_name   = project_get_field( $t_project_id, 'name' );
+		$t_category_title = category_get_name( $t_bugnote_category_id );
+		if ( $t_use_javascript && $t_project_ids_size > 1 ) {
+			$t_project_name_link = '<span style="cursor:pointer;" class="motives-project-link" data-project="' . $t_project_id . '">' . $t_project_name . '/' . $t_category_title . '</span>';
+		} else {
+			$t_project_name_link = $t_project_name . '/' . $t_category_title;
+		}
 
-	$t_bugs              = $t_project_data['bugs'];
-	$t_issue_size        = $t_project_data['bugs_size'];
-	$t_issue_size_html   = '<span title="' . plugin_lang_get( 'issues' ) . '">' . $t_issue_size . '</span>';
-	$t_bugnote_size_html = '<span title="' . plugin_lang_get( 'notes' ) . '">' . $t_bug_note_size . '</span>';
+		$t_bugs              = $t_category_bugs_array;
+		$t_issue_size        = count( $t_category_bugs );
+		$t_issue_size_html   = '<span title="' . plugin_lang_get( 'issues' ) . '">' . $t_issue_size . '</span>';
+		$t_bugnote_size_html = '<span title="' . plugin_lang_get( 'notes' ) . '">' . $t_bug_note_size . '</span>';
 
-	echo '<div class="col-md-12 col-xs-12 motives-project">',
-	'<div class="widget-box widget-color-blue2">',
-	'<div class="widget-header widget-header-small">',
-		'<h4 class="widget-title"><i class="ace-icon fa fa-columns"></i>' . $t_project_name_link . '<span class="badge"> ' . $t_issue_size_html . '/' . $t_bugnote_size_html . '</span></h4>',
-	'<div class="widget-toolbar">
+		echo '<div class="col-md-12 col-xs-12 motives-project">',
+		'<div class="widget-box widget-color-blue2">',
+		'<div class="widget-header widget-header-small">',
+			'<h4 class="widget-title"><i class="ace-icon fa fa-columns"></i>' . $t_project_name_link . '<span class="badge"> ' . $t_issue_size_html . '/' . $t_bugnote_size_html . '</span></h4>',
+		'<div class="widget-toolbar">
                             <a id="filter-toggle" data-action="collapse" href="#">
                                 <i class="1 ace-icon fa bigger-125 fa-chevron-up"></i>
                             </a>
 			         </div>',
-	'</div>',
-	'<div class="widget-body"><div class="widget-main no-padding">';
-	foreach ( $t_bugs as $t_bug_id => $t_group ) {
-		if ( !empty( $t_group ) && !is_empty_group( $t_group ) ) {
-			$t_bug              = bug_get( $t_bug_id );
-			$t_summary          = $t_bug->summary;
-			$t_status_color     = get_status_color( $t_bug->status, $t_user_id, $t_project_id );
-			$t_date_submitted   = date( config_get( 'complete_date_format' ), $t_bug->date_submitted );
-			$t_background_color = 'background-color: ' . $t_status_color;
+		'</div>',
+		'<div class="widget-body"><div class="widget-main no-padding">';
+		foreach ( $t_bugs as $t_bug_id => $t_group ) {
+			if ( !empty( $t_group ) && !is_empty_group( $t_group ) ) {
+				$t_bug              = bug_get( $t_bug_id );
+				$t_summary          = $t_bug->summary;
+				$t_status_color     = get_status_color( $t_bug->status, $t_user_id, $t_project_id );
+				$t_date_submitted   = date( config_get( 'complete_date_format' ), $t_bug->date_submitted );
+				$t_background_color = 'background-color: ' . $t_status_color;
 
-			echo '<table cellspacing="0" class="table motives-table"><tbody>', '<tr><td class="news-heading-public motives-center" width="65px" style="' . $t_background_color . '">';
-			print_bug_link( $t_bug_id, true );
-			echo '<br/>';
+				echo '<table cellspacing="0" class="table motives-table"><tbody>', '<tr><td class="news-heading-public motives-center" width="65px" style="' . $t_background_color . '">';
+				print_bug_link( $t_bug_id, true );
+				echo '<br/>';
 
-			if ( !bug_is_readonly( $t_bug_id ) && access_has_bug_level( $t_update_bug_threshold, $t_bug_id ) ) {
-				echo '<a href="' . string_get_bug_update_url( $t_bug_id ) . '">',
-					'<i class="fa fa-pencil bigger-130 padding-2 grey" title="' . lang_get( 'update_bug_button' ) . '"></i>',
-				'</a>';
-			}
-
-			if ( ON == $t_show_priority_text ) {
-				print_formatted_priority_string( $t_bug );
-			} else {
-				print_status_icon( $t_bug->priority );
-			}
-
-			echo '</td><td class="news-heading-public" style="' . $t_background_color . '"><span class="bold">' . $t_summary . '</span> - <span class="italic-small">' . $t_date_submitted . '</span>', '</td></tr>';
-			foreach ( $t_group as $t_bugnote ) {
-
-				$t_date_submitted = format_date_submitted( $t_bugnote['date_submitted'] );
-				$t_user_id        = VS_PRIVATE == $t_bugnote['view_state'] ? null : $t_bugnote['reporter_id'];
-				$t_user_name      = $t_user_id != null ? user_get_name( $t_user_id ) : lang_get( 'private' );
-				$t_user_link      = $t_user_id != null ? '<a href="view_user_page.php?id=' . $t_user_id . '">' . $t_user_name . '</a>' : $t_user_name;
-				$t_bonus_user_name = !empty($t_bugnote['bonus_user_id']) ? user_get_name( $t_bugnote['bonus_user_id'] ) : lang_get( 'private' );
-				$t_bonus_user_link = !empty($t_bugnote['bonus_user_id']) ? '<a href="view_user_page.php?id=' . $t_bugnote['bonus_user_id'] . '">' . $t_bonus_user_name . '</a>' : $t_bonus_user_name;
-				$t_note           = string_display_links( trim( $t_bugnote['note'] ) );
-				$t_bugnote_link   = string_get_bugnote_view_link2( $t_bugnote['bug_id'], $t_bugnote['id'], $t_user_id );
-				$t_amount         = motives_format_amount($t_bugnote['amount']);
-				if ( !empty( $t_note ) ) {
-					echo '<tr><td align="center" style="vertical-align: top; text-align: center;"><div class="motives-date">', $t_date_submitted, '</div>', '';
-					if ( $t_show_avatar && !empty( $t_user_id ) ) print_avatar( $t_user_id, 60 );
-					echo '</td>';
-					echo '<td style="vertical-align: top;"><div class="motives-item">',
-					'<span class="bold">', $t_user_link, '</span> (', $t_bugnote_link, ') - ', $t_bonus_user_link, ' ', $t_amount, '</div>',
-					'<div class="motives-note">', $t_note, '</div>', '</div></td></tr>';
+				if ( !bug_is_readonly( $t_bug_id ) && access_has_bug_level( $t_update_bug_threshold, $t_bug_id ) ) {
+					echo '<a href="' . string_get_bug_update_url( $t_bug_id ) . '">',
+						'<i class="fa fa-pencil bigger-130 padding-2 grey" title="' . lang_get( 'update_bug_button' ) . '"></i>',
+					'</a>';
 				}
-			}
 
-			echo '</table>';
+				if ( ON == $t_show_priority_text ) {
+					print_formatted_priority_string( $t_bug );
+				} else {
+					print_status_icon( $t_bug->priority );
+				}
+
+				echo '</td><td class="news-heading-public" style="' . $t_background_color . '"><span class="bold">' . $t_summary . '</span> - <span class="italic-small">' . $t_date_submitted . '</span>', '</td></tr>';
+				foreach ( $t_group as $t_bugnote ) {
+
+					$t_date_submitted  = format_date_submitted( $t_bugnote['date_submitted'] );
+					$t_user_id         = VS_PRIVATE == $t_bugnote['view_state'] ? null : $t_bugnote['reporter_id'];
+					$t_user_name       = $t_user_id != null ? user_get_name( $t_user_id ) : lang_get( 'private' );
+					$t_user_link       = $t_user_id != null ? '<a href="view_user_page.php?id=' . $t_user_id . '">' . $t_user_name . '</a>' : $t_user_name;
+					$t_bonus_user_name = !empty( $t_bugnote['bonus_user_id'] ) ? user_get_name( $t_bugnote['bonus_user_id'] ) : lang_get( 'private' );
+					$t_bonus_user_link = !empty( $t_bugnote['bonus_user_id'] ) ? '<a href="view_user_page.php?id=' . $t_bugnote['bonus_user_id'] . '">' . $t_bonus_user_name . '</a>' : $t_bonus_user_name;
+					$t_note            = string_display_links( trim( $t_bugnote['note'] ) );
+					$t_bugnote_link    = string_get_bugnote_view_link2( $t_bugnote['bug_id'], $t_bugnote['id'], $t_user_id );
+					$t_amount          = motives_format_amount( $t_bugnote['amount'] );
+					if ( !empty( $t_note ) ) {
+						echo '<tr><td align="center" style="vertical-align: top; text-align: center;"><div class="motives-date">', $t_date_submitted, '</div>', '';
+						if ( $t_show_avatar && !empty( $t_user_id ) ) print_avatar( $t_user_id, 60 );
+						echo '</td>';
+						echo '<td style="vertical-align: top;"><div class="motives-item">',
+						'<span class="bold">', $t_user_link, '</span> (', $t_bugnote_link, ') - ', $t_bonus_user_link, ' ', $t_amount, '</div>',
+						'<div class="motives-note">', $t_note, '</div>', '</div></td></tr>';
+					}
+				}
+
+				echo '</table>';
+			}
 		}
+		echo '</div></div></div></div>';
 	}
-	echo '</div></div></div></div>';
 }
 
 layout_page_end();
