@@ -76,7 +76,15 @@ hr.motives-hr {
 .motives-root .table-container {
     margin: 0;
     width: auto;
-
+}
+.motives-root .badge{
+    background-color: #c4c4c4;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    margin-left: 3px;
+    padding: 1px;
+}
 .motives-fines-by-user, .motives-bonuses-by-user {
     padding-left: 10px;
 }
