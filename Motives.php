@@ -41,7 +41,7 @@ class MotivesPlugin extends MantisPlugin
 		$this->description = plugin_lang_get( 'description' );
 		$this->page        = 'config';
 
-		$this->version  = '1.1';
+		$this->version  = '1.2';
 		$this->requires = array( 'MantisCore' => '2.26.0', );
 
 		$this->author  = 'Sergey Marchenko';
