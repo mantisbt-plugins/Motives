@@ -42,7 +42,7 @@ class MotivesPlugin extends MantisPlugin
 		$this->page        = 'config';
 
 		$this->version  = '1.1';
-		$this->requires = array( 'MantisCore' => '2.0.0', );
+		$this->requires = array( 'MantisCore' => '2.26.0', );
 
 		$this->author  = 'Sergey Marchenko';
 		$this->contact = 'sergey@mzsl.ru';
